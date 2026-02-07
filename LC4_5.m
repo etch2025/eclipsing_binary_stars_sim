@@ -119,7 +119,7 @@ if b_h <= (r1 - r2)
     % Primary Eclipse Bottom Flux
     
     fplot(L_PE2, [t2, t3], "red");
-    fplot(L_SE1, [P/2 + t2, P/2 + t3], "blue");
+    fplot(L_SE2, [P/2 + t2, P/2 + t3], "blue");
    
 end
 
