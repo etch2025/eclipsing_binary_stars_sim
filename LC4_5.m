@@ -88,7 +88,7 @@ figure(1);
 grid on;
 
 title({"m_{1} = " + m1 + " M_{☉}, r_{1} = " + r1 + " R_{☉}, L_{1} = " + L1 + " L_{☉}", "m_{2} = " + m2 + " M_{☉}, r_{2} = " + r2 + " R_{☉}, L_{2} = " + L2 + " L_{☉}", "P = " + P/(24*60^2) + " d, a = " + sma/AU + " AU, i = " + i + "°"});
-xlabel({"Seconds", "Red = m_{2} eclipse m_{1}, Blue = m_{1} eclipse m_{2}, Black = Full Luminosity"})
+xlabel({"Seconds"})
 ylabel("Solar Luminosities");
 xlim([0, P]);
 ylim([0, 1.2*L_total]);
