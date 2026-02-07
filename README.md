@@ -1,6 +1,6 @@
-Eclipsing Binary Stars Light Curve Simulated
+Eclipsing Binary Stars Light Curve Simulated\n
 Desmos Version: https://www.desmos.com/calculator/hvjfjnlnyz
-(Example provided in binarycurve.png)
+\n(Example provided in binarycurve.png)
 
 Major Assumptions:
 - Uniform Luminosity Distribution (No limb darkening, luminosity/projected area = const)
