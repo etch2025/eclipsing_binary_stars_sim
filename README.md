@@ -1,4 +1,5 @@
 Eclipsing Binary Stars Light Curve Simulated
+Desmos Version: https://www.desmos.com/calculator/hvjfjnlnyz
 (Example provided in binarycurve.png)
 
 Major Assumptions:
