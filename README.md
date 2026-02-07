@@ -1,6 +1,7 @@
-Eclipsing Binary Stars Light Curve Simulated  
-Desmos Version: https://www.desmos.com/calculator/hvjfjnlnyz  
-(Example provided in binarycurve.png)
+**Eclipsing Binary Stars Light Curve Simulator**  
+
+**Desmos Version: https://www.desmos.com/calculator/hvjfjnlnyz  
+(MATLAB example image provided in binarycurve.png)**
 
 Major Assumptions:
 - Uniform Luminosity Distribution (No limb darkening, luminosity/projected area = const)
