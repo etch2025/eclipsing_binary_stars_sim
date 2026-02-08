@@ -108,13 +108,13 @@ fplot(L_FF, "black");
 % Piecewise Version (DO NOT CHANGE)
 syms L_SE(t)
 L_SE(t) = piecewise((P/2 <= t & t <= P/2 + t_total), L_SE1);
-fplot(L_SE, "blue")
+fplot(L_SE, "blue");
 
 
 if b_h <= (r1 - r2)
     val = sqrt((((r1 - r2)^2 - b_h^2) * w^2 * R_Sol^2)/v_rel^2);
-    t2 = (-asin(val) + phi)/w
-    t3 = (asin(val) + phi)/w
+    t2 = (-asin(val) + phi)/w;
+    t3 = (asin(val) + phi)/w;
     
     % Primary Eclipse Bottom Flux
     
