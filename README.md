@@ -1,7 +1,9 @@
 **Eclipsing Binary Stars Light Curve Simulator**  
 
 **Desmos Version: https://www.desmos.com/calculator/hvjfjnlnyz  
-(MATLAB example image provided in binarycurve1.png)**
+MATLAB Version: LC4_5.m
+Python Version: LC4_5.m
+(Python and MATLAB example image provided in binarycurve1.png)**
 
 Major Assumptions:
 - Uniform Luminosity Distribution (No limb darkening, luminosity/projected area = const)
