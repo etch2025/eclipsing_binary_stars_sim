@@ -2,7 +2,7 @@
 
 **Desmos Version: https://www.desmos.com/calculator/hvjfjnlnyz  
 MATLAB Version: LC4_5.m
-Python Version: LC4_5.m
+Python Version: LC4_5.py
 (Python and MATLAB example image provided in binarycurve1.png)**
 
 Major Assumptions:
