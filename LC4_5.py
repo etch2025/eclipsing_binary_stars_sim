@@ -27,8 +27,8 @@ r1 = 0.6  # Solar Radii
 r2 = 0.5  # r2 < r1 Solar Radii
 L1 = 1  # Solar Luminosity
 L2 = 0.5  # Solar Luminosity
-P = 0.154  # Orbital Period in Days
-i = 85  # Inclination Angle in Deg
+P = .2  # Orbital Period in Days
+i = 90  # Inclination Angle in Deg
 
 # Calculations (DO NOT CHANGE)
 A1 = np.pi * r1**2  # Area of Star 1 in R_Solar^2
@@ -49,6 +49,7 @@ L_total = L1 + L2  # Total Luminosity of System in L_Sol
 P_min = np.sqrt((((r1+r2)*R_Sol)/AU)**3/(m1+m2)) * yr  # Minimum Orbital Period in Seconds
 i_min = np.arccos(((r1 + r2)*R_Sol)/sma) * (180/np.pi)  # Minimum Inclination for eclipse in Deg
 i_grazing = np.arccos(((r1 - r2)*R_Sol)/sma) * (180/np.pi)  # Maximum Inclination for grazing eclipse
+
 
 # Equations (DO NOT CHANGE)
 def v(t):
@@ -153,18 +154,16 @@ plt.legend()
 
 # Save figure
 plt.savefig('binarycurve.png', dpi=500, bbox_inches='tight')
-plt.show()
 
-print(f"Orbital Period: {P/(24*60*60):.3f} days")
-print(f"Semi-major axis: {sma/AU:.4f} AU")
-print(f"Transit Duration: {t_total/60:.3f} minutes")
-print(f"Impact Parameter: {b_h:.3f} R☉")
-print(f"Minimum Inclination: {i_min:.2f}°")
-print(f"Minimum Grazing Eclipse Inclination: {i_grazing:.2f}°")
+if (i < i_min):
+    print("No Eclipse Occurs: Inclination too low.")
 
-clear_prompt = input("Clear Plot (y/n): ").lower()
-while (clear_prompt != "y" or clear_prompt != "yes"):
-    clear_prompt = input("Clear Plot (y/n): ").lower()
-    if (clear_prompt == "y" or clear_prompt != "yes"):
-        plt.clf()
-        break
+elif (P < P_min):
+    print("Invalid System: Orbital Period too short for given star sizes.")
+else:
+    print(f"Orbital Period: {P/(24*60*60):.3f} days")
+    print(f"Semi-major axis: {sma/AU:.4f} AU")
+    print(f"Transit Duration: {t_total/60:.3f} minutes")
+    print(f"Impact Parameter: {b_h:.3f} R☉")
+    print(f"Minimum Inclination: {i_min:.2f}°")
+    print(f"Minimum Grazing Eclipse Inclination: {i_grazing:.2f}°")
