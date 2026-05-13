@@ -27,8 +27,8 @@ r1 = 0.6  # Solar Radii
 r2 = 0.5  # r2 < r1 Solar Radii
 L1 = 1  # Solar Luminosity
 L2 = 0.5  # Solar Luminosity
-P = .2  # Orbital Period in Days
-i = 90  # Inclination Angle in Deg
+P = 0.17  # Orbital Period in Days
+i = 72  # Inclination Angle in Deg
 
 # Calculations (DO NOT CHANGE)
 A1 = np.pi * r1**2  # Area of Star 1 in R_Solar^2
@@ -153,17 +153,22 @@ plt.ylim([0, 1.2*L_total])
 plt.legend()
 
 # Save figure
-plt.savefig('binarycurve.png', dpi=500, bbox_inches='tight')
+
 
 if (i < i_min):
     print("No Eclipse Occurs: Inclination too low.")
 
+    t_full = np.linspace(0, P, 1000)
+    plt.plot(t_full, L_full(t_full), 'black', label='Full Flux')
+
 elif (P < P_min):
     print("Invalid System: Orbital Period too short for given star sizes.")
-else:
-    print(f"Orbital Period: {P/(24*60*60):.3f} days")
-    print(f"Semi-major axis: {sma/AU:.4f} AU")
-    print(f"Transit Duration: {t_total/60:.3f} minutes")
-    print(f"Impact Parameter: {b_h:.3f} R☉")
-    print(f"Minimum Inclination: {i_min:.2f}°")
-    print(f"Minimum Grazing Eclipse Inclination: {i_grazing:.2f}°")
+
+print(f"Orbital Period: {P/(24*60*60):.3f} days")
+print(f"Semi-major axis: {sma/AU:.4f} AU")
+print(f"Transit Duration: {t_total/60:.3f} minutes")
+print(f"Impact Parameter: {b_h:.3f} R☉")
+print(f"Minimum Inclination: {i_min:.2f}°")
+print(f"Minimum Grazing Eclipse Inclination: {i_grazing:.2f}°")
+
+plt.savefig('binarycurve.png', dpi=500, bbox_inches='tight')
