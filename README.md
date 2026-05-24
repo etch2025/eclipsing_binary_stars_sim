@@ -5,7 +5,7 @@ Python Version: LC4_5.py
 Desmos Version: https://www.desmos.com/calculator/hvjfjnlnyz**
 
 
-![alt text](https://github.com/etch2025/eclipsing_binary_stars_sim/blob/main/binarycurve1.png?raw=true)
+<img width="7387" height="5115" alt="image" src="https://github.com/user-attachments/assets/0e3f3864-8b8f-4956-8c0a-8aa4e440bba8" />
 
 
 Major Assumptions:
