@@ -110,17 +110,18 @@ def L_full(t):
         return np.full_like(t, L_total)
 
 # Graph Generation
-fig = plt.figure(figsize=(18, 12))
-gs = fig.add_gridspec(2, 3, height_ratios=[1, 1], hspace=0.35, wspace=0.3)
+fig = plt.figure(figsize=(15, 12))
+gs = fig.add_gridspec(2, 4, height_ratios=[1, 1], hspace=0, wspace=0.3)
 ax_top = fig.add_subplot(gs[0, :])
 ax_primaryeclipse = fig.add_subplot(gs[1, 0], aspect='equal')
 ax_orbit = fig.add_subplot(gs[1, 1], aspect='equal')
 ax_secondaryeclipse = fig.add_subplot(gs[1, 2], aspect='equal')
-
+ax_orbit2 = fig.add_subplot(gs[1, 3], aspect='equal')
 ax_top.grid(True)
 ax_orbit.grid(True, alpha=0.3)
 ax_primaryeclipse.grid(True, alpha=0.3)
 ax_secondaryeclipse.grid(True, alpha=0.3)
+ax_orbit2.grid(True, alpha=0.3)
 
 # Create time arrays for plotting
 t_primary = np.linspace(t1, t_total, 1000)
@@ -132,7 +133,7 @@ t_full2 = np.linspace(P/2 + t_total, P, 1000)
 ax_top.plot(t_primary, L_PE1(t_primary), 'red', label='Primary Eclipse')
 
 # Plot Full Flux
-ax_top.plot(t_full1, L_full(t_full1), 'black', label='Full Flux')
+ax_top.plot(t_full1, L_full(t_full1), 'black', label='Full Flux 1')
 ax_top.plot(t_full2, L_full(t_full2), 'black')
 
 # Plot Secondary Eclipse
@@ -163,7 +164,7 @@ ax_top.set_ylim([0, 1.2*L_total])
 ax_top.legend(loc='upper left', ncol = 3)
 
 # Plot orbital diagram
-ax_orbit.set_title(f"Full Flux\n{t_total:.2f} < t = {P/2:.2f} s")
+ax_orbit.set_title(f"Full Flux 1\n{t_total:.2f} < t = {P/2:.2f} s")
 ax_orbit.set_xlabel("Solar Radii R☉")
 ax_orbit.set_ylabel("Solar Radii R☉")
 ax_orbit.set_xlim([-1.5*sma/R_Sol, 1.5*sma/R_Sol])
@@ -204,6 +205,16 @@ ax_secondaryeclipse.add_patch(Ellipse(xy=(0, 0), width=2*sma/R_Sol, height=2*sma
 ax_secondaryeclipse.add_patch(Circle((0, 0), r1, color='red', label='Primary Star', zorder=2))
 ax_secondaryeclipse.add_patch(Circle((0, -sma/R_Sol*np.sin(np.radians(90-i))), r2, color='blue', label='Secondary Star', zorder=1))
 
+# Plot Full Flux 2
+ax_orbit2.set_title(f"Full Flux 2\n{P/2 + t_total:.2f} < t < {P:.2f} s")
+ax_orbit2.set_xlabel("Solar Radii R☉")
+ax_orbit2.set_ylabel("Solar Radii R☉")
+ax_orbit2.set_xlim([-1.5*sma/R_Sol, 1.5*sma/R_Sol])
+ax_orbit2.set_ylim([-1.5*sma/R_Sol, 1.5*sma/R_Sol])
+ax_orbit2.add_patch(Ellipse(xy=(0, 0), width=2*sma/R_Sol, height=2*sma/R_Sol*np.sin(np.radians(90-i)), angle=0, 
+              edgecolor='black', fc='None', lw=1, label='Circular Orbit', zorder=3))
+ax_orbit2.add_patch(Circle((0, 0), r1, color='red', label='Primary Star', zorder=2))
+ax_orbit2.add_patch(Circle((-sma/R_Sol, 0), r2, color='blue', label='Secondary Star', zorder=1))
 
 if (i < i_min):
     print("No Eclipse Occurs: Inclination too low.")
