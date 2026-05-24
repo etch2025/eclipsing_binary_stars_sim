@@ -9,6 +9,7 @@ Major Assumptions:
 
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.patches import Ellipse, Circle
 
 # General Scientific Constants (DO NOT CHANGE)
 AU = 1.5e11  # Astronomical Unit
@@ -27,8 +28,8 @@ r1 = 0.6  # Solar Radii
 r2 = 0.5  # r2 < r1 Solar Radii
 L1 = 1  # Solar Luminosity
 L2 = 0.5  # Solar Luminosity
-P = 0.17  # Orbital Period in Days
-i = 72  # Inclination Angle in Deg
+P = 0.205  # Orbital Period in Days
+i = 82  # Inclination Angle in Deg
 
 # Calculations (DO NOT CHANGE)
 A1 = np.pi * r1**2  # Area of Star 1 in R_Solar^2
@@ -109,8 +110,17 @@ def L_full(t):
         return np.full_like(t, L_total)
 
 # Graph Generation
-plt.figure(1, figsize=(10, 6))
-plt.grid(True)
+fig = plt.figure(figsize=(18, 12))
+gs = fig.add_gridspec(2, 3, height_ratios=[1, 1], hspace=0.35, wspace=0.3)
+ax_top = fig.add_subplot(gs[0, :])
+ax_primaryeclipse = fig.add_subplot(gs[1, 0], aspect='equal')
+ax_orbit = fig.add_subplot(gs[1, 1], aspect='equal')
+ax_secondaryeclipse = fig.add_subplot(gs[1, 2], aspect='equal')
+
+ax_top.grid(True)
+ax_orbit.grid(True, alpha=0.3)
+ax_primaryeclipse.grid(True, alpha=0.3)
+ax_secondaryeclipse.grid(True, alpha=0.3)
 
 # Create time arrays for plotting
 t_primary = np.linspace(t1, t_total, 1000)
@@ -119,14 +129,14 @@ t_secondary = np.linspace(P/2, P/2 + t_total, 1000)
 t_full2 = np.linspace(P/2 + t_total, P, 1000)
 
 # Plot Primary Eclipse
-plt.plot(t_primary, L_PE1(t_primary), 'red', label='Primary Eclipse')
+ax_top.plot(t_primary, L_PE1(t_primary), 'red', label='Primary Eclipse')
 
 # Plot Full Flux
-plt.plot(t_full1, L_full(t_full1), 'black', label='Full Flux')
-plt.plot(t_full2, L_full(t_full2), 'black')
+ax_top.plot(t_full1, L_full(t_full1), 'black', label='Full Flux')
+ax_top.plot(t_full2, L_full(t_full2), 'black')
 
 # Plot Secondary Eclipse
-plt.plot(t_secondary, L_SE1(t_secondary), 'blue', label='Secondary Eclipse')
+ax_top.plot(t_secondary, L_SE1(t_secondary), 'blue', label='Secondary Eclipse')
 
 # Check for total eclipse condition
 if b_h <= (r1 - r2):
@@ -136,30 +146,70 @@ if b_h <= (r1 - r2):
     
     # Primary Eclipse Bottom Flux
     t_pe_total = np.linspace(t2, t3, 1000)
-    plt.plot(t_pe_total, L_PE2(t_pe_total), 'red')
+    ax_top.plot(t_pe_total, L_PE2(t_pe_total), 'red')
     
     # Secondary Eclipse Bottom Flux
     t_se_total = np.linspace(P/2 + t2, P/2 + t3, 1000)
-    plt.plot(t_se_total, L_SE2(t_se_total), 'blue')
+    ax_top.plot(t_se_total, L_SE2(t_se_total), 'blue')
 
 # Set plot properties
-plt.title(f"m₁ = {m1} M☉, r₁ = {r1} R☉, L₁ = {L1} L☉\n" +
-          f"m₂ = {m2} M☉, r₂ = {r2} R☉, L₂ = {L2} L☉\n" +
-          f"P = {P/(24*60**2):.3f} d, a = {sma/AU:.4f} AU, i = {i}°")
-plt.xlabel("Seconds")
-plt.ylabel("Solar Luminosities")
-plt.xlim([0, P])
-plt.ylim([0, 1.2*L_total])
-plt.legend()
+ax_top.set_title(f"m₁ = {m1} M☉, r₁ = {r1} R☉, L₁ = {L1} L☉," +
+                  f"    m₂ = {m2} M☉, r₂ = {r2} R☉, L₂ = {L2} L☉\n" +
+                  f"P = {P/(24*60**2):.3f} d, a = {sma/AU:.4f} AU, e = 0.000, i = {i}°")
+ax_top.set_xlabel("Seconds")
+ax_top.set_ylabel("Solar Luminosities")
+ax_top.set_xlim([0, P])
+ax_top.set_ylim([0, 1.2*L_total])
+ax_top.legend(loc='upper left', ncol = 3)
 
-# Save figure
+# Plot orbital diagram
+ax_orbit.set_title(f"Full Flux\n{t_total:.2f} < t = {P/2:.2f} s")
+ax_orbit.set_xlabel("Solar Radii R☉")
+ax_orbit.set_ylabel("Solar Radii R☉")
+ax_orbit.set_xlim([-1.5*sma/R_Sol, 1.5*sma/R_Sol])
+ax_orbit.set_ylim([-1.5*sma/R_Sol, 1.5*sma/R_Sol])
+
+# Plot circular orbit projected as ellipse
+orbit = Ellipse(xy=(0, 0), width=2*sma/R_Sol, height=2*sma/R_Sol*np.sin(np.radians(90-i)), angle=0, 
+              edgecolor='black', fc='None', lw=1, label='Circular Orbit', zorder=3)
+ax_orbit.add_patch(orbit)
+
+# Plot stars
+primarystar = plt.Circle((0, 0), r1, color='red', fill=True, label='Primary Star', zorder=2)
+secondarystar = plt.Circle((sma/R_Sol, 0), r2, color='blue', fill=True, label='Secondary Star', zorder=1)
+ax_orbit.add_patch(primarystar)
+ax_orbit.add_patch(secondarystar)
+
+# Plot the primary eclipse
+ax_primaryeclipse.set_title(f"Primary Eclipse\n0 < t < {t_total:.2f} s")
+ax_primaryeclipse.set_xlabel("Solar Radii R☉")
+ax_primaryeclipse.set_ylabel("Solar Radii R☉")
+ax_primaryeclipse.set_xlim([-1.5*sma/R_Sol, 1.5*sma/R_Sol])
+ax_primaryeclipse.set_ylim([-1.5*sma/R_Sol, 1.5*sma/R_Sol])
+
+ax_primaryeclipse.add_patch(Ellipse(xy=(0, 0), width=2*sma/R_Sol, height=2*sma/R_Sol*np.sin(np.radians(90-i)), angle=0, 
+              edgecolor='black', fc='None', lw=1, label='Circular Orbit', zorder=3))
+ax_primaryeclipse.add_patch(Circle((0, 0), r1, color='red', label='Primary Star', zorder=1))
+ax_primaryeclipse.add_patch(Circle((0, -sma/R_Sol*np.sin(np.radians(90-i))), r2, color='blue', label='Secondary Star', zorder=2))
+ax_primaryeclipse.legend(loc='upper left')
+
+# Plot the secondary eclipse
+ax_secondaryeclipse.set_title(f"Secondary Eclipse\n{P/2:.2f} < t < {P/2 + t_total:.2f} s")
+ax_secondaryeclipse.set_xlabel("Solar Radii R☉")
+ax_secondaryeclipse.set_ylabel("Solar Radii R☉")
+ax_secondaryeclipse.set_xlim([-1.5*sma/R_Sol, 1.5*sma/R_Sol])
+ax_secondaryeclipse.set_ylim([-1.5*sma/R_Sol, 1.5*sma/R_Sol])
+ax_secondaryeclipse.add_patch(Ellipse(xy=(0, 0), width=2*sma/R_Sol, height=2*sma/R_Sol*np.sin(np.radians(90-i)), angle=0, 
+              edgecolor='black', fc='None', lw=1, label='Circular Orbit', zorder=3))
+ax_secondaryeclipse.add_patch(Circle((0, 0), r1, color='red', label='Primary Star', zorder=2))
+ax_secondaryeclipse.add_patch(Circle((0, -sma/R_Sol*np.sin(np.radians(90-i))), r2, color='blue', label='Secondary Star', zorder=1))
 
 
 if (i < i_min):
     print("No Eclipse Occurs: Inclination too low.")
 
     t_full = np.linspace(0, P, 1000)
-    plt.plot(t_full, L_full(t_full), 'black', label='Full Flux')
+    ax_top.plot(t_full, L_full(t_full), 'black', label='Full Flux')
 
 elif (P < P_min):
     print("Invalid System: Orbital Period too short for given star sizes.")
@@ -169,6 +219,8 @@ print(f"Semi-major axis: {sma/AU:.4f} AU")
 print(f"Transit Duration: {t_total/60:.3f} minutes")
 print(f"Impact Parameter: {b_h:.3f} R☉")
 print(f"Minimum Inclination: {i_min:.2f}°")
+print(f"Minimum Possible Orbital Period: {P_min/(24*60*60):.3f} days")
 print(f"Minimum Grazing Eclipse Inclination: {i_grazing:.2f}°")
 
-plt.savefig('binarycurve.png', dpi=500, bbox_inches='tight')
+fig.savefig('binarycurve.png', dpi=500, bbox_inches='tight')
+print("Graph saved as 'binarycurve.png'")
