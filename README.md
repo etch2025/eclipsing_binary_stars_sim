@@ -4,8 +4,8 @@
 Python Version: LC4_5.py  
 Desmos Version: https://www.desmos.com/calculator/hvjfjnlnyz**
 
+<img width="6224" height="4567" alt="image" src="https://github.com/user-attachments/assets/b182c18b-5f18-4ec8-b3fd-a0829fe7fc7e" />
 
-<img width="7387" height="5115" alt="image" src="https://github.com/user-attachments/assets/0e3f3864-8b8f-4956-8c0a-8aa4e440bba8" />
 
 
 Major Assumptions:
