@@ -29,7 +29,7 @@ r2 = 0.5  # r2 < r1 Solar Radii
 L1 = 1  # Solar Luminosity
 L2 = 0.5  # Solar Luminosity
 P = 0.205  # Orbital Period in Days
-i = 82  # Inclination Angle in Deg
+i = 39  # Inclination Angle in Deg
 
 # Calculations (DO NOT CHANGE)
 A1 = np.pi * r1**2  # Area of Star 1 in R_Solar^2
@@ -156,7 +156,7 @@ if b_h <= (r1 - r2):
 # Set plot properties
 ax_top.set_title(f"m₁ = {m1} M☉, r₁ = {r1} R☉, L₁ = {L1} L☉," +
                   f"    m₂ = {m2} M☉, r₂ = {r2} R☉, L₂ = {L2} L☉\n" +
-                  f"P = {P/(24*60**2):.3f} d, a = {sma/AU:.4f} AU, e = 0.000, i = {i}°")
+                  f"P = {P/(24*60**2):.3f} d, a = {sma/AU:.4f} AU, e = 0.000, i = {i}°\nEclipse Duration: {t_total/60:.3f} min, Impact Parameter b = {b_h/r1:.3f}")
 ax_top.set_xlabel("Seconds")
 ax_top.set_ylabel("Solar Luminosities")
 ax_top.set_xlim([0, P])
@@ -228,8 +228,8 @@ elif (P < P_min):
 print(f"Orbital Period: {P/(24*60*60):.3f} days")
 print(f"Semi-major axis: {sma/AU:.4f} AU")
 print(f"Transit Duration: {t_total/60:.3f} minutes")
-print(f"Impact Parameter: {b_h:.3f} R☉")
-print(f"Minimum Inclination: {i_min:.2f}°")
+print(f"Impact Parameter: {b_h:.3f} R☉,    b/r₁ = {b_h/r1:.3f}")
+print(f"Minimum Inclination for Eclipse: {i_min:.2f}°")
 print(f"Minimum Possible Orbital Period: {P_min/(24*60*60):.3f} days")
 print(f"Minimum Grazing Eclipse Inclination: {i_grazing:.2f}°")
 
