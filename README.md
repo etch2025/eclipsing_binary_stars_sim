@@ -4,9 +4,7 @@
 Python Version: LC4_5.py  
 Desmos Version: https://www.desmos.com/calculator/hvjfjnlnyz**
 
-<img width="6224" height="4567" alt="image" src="https://github.com/user-attachments/assets/b182c18b-5f18-4ec8-b3fd-a0829fe7fc7e" />
-
-
+<img width="6224" height="4661" alt="image" src="https://github.com/user-attachments/assets/abf6c04d-51fa-4d48-a10b-019ac0a84b05" />
 
 Major Assumptions:
 - Uniform Luminosity Distribution (No limb darkening, luminosity/projected area = const)
