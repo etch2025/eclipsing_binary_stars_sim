@@ -22,14 +22,15 @@ R_Sol = 6.96e8  # Solar Radii
 yr = 365 * 24 * 60 * 60  # Years in seconds
 
 # INPUT PARAMETERS
-m1 = 0.5  # Solar Masses
-m2 = 0.25  # Solar Masses
-r1 = 0.6  # Solar Radii
-r2 = 0.5  # r2 < r1 Solar Radii
-L1 = 1  # Solar Luminosity
-L2 = 0.5  # Solar Luminosity
-P = 0.205  # Orbital Period in Days
-i = 39  # Inclination Angle in Deg
+target = "Algol AB (Beta Persei)"  # Name of system
+m1 = 3.17  # Solar Masses
+m2 = 0.70  # Solar Masses
+r1 = 2.73  # Solar Radii
+r2 = 3.48  # r2 < r1 Solar Radii
+L1 = 182  # Solar Luminosity
+L2 = 6.92  # Solar Luminosity
+P = 2.867328  # Orbital Period in Days
+i = 98.70  # Inclination Angle in Deg
 
 # Calculations (DO NOT CHANGE)
 A1 = np.pi * r1**2  # Area of Star 1 in R_Solar^2
@@ -154,7 +155,7 @@ if b_h <= (r1 - r2):
     ax_top.plot(t_se_total, L_SE2(t_se_total), 'blue')
 
 # Set plot properties
-ax_top.set_title(f"m₁ = {m1} M☉, r₁ = {r1} R☉, L₁ = {L1} L☉," +
+ax_top.set_title(f"{target}\nm₁ = {m1} M☉, r₁ = {r1} R☉, L₁ = {L1} L☉," +
                   f"    m₂ = {m2} M☉, r₂ = {r2} R☉, L₂ = {L2} L☉\n" +
                   f"P = {P/(24*60**2):.3f} d, a = {sma/AU:.4f} AU, e = 0.000, i = {i}°\nEclipse Duration: {t_total/60:.3f} min, Impact Parameter b = {b_h/r1:.3f}")
 ax_top.set_xlabel("Seconds")
