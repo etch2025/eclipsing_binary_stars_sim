@@ -1,8 +1,8 @@
 **Eclipsing Binary Stars Light Curve Simulator**  
 
-**Python Version: LC4_5.py (most up to date)**
-MATLAB Version: LC4_5.m
-Desmos Version: https://www.desmos.com/calculator/hvjfjnlnyz
+**Python Version: LC4_5.py (most up to date)**  
+MATLAB Version: LC4_5.m  
+Desmos Version: https://www.desmos.com/calculator/hvjfjnlnyz  
 
 <img width="6321" height="4925" alt="image" src="https://github.com/user-attachments/assets/fb5880f9-1a8d-4bfc-9f83-3fb4001799f7" />
 
