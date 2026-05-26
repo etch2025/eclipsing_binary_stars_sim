@@ -22,21 +22,22 @@ R_Sol = 6.96e8  # Solar Radii
 yr = 365 * 24 * 60 * 60  # Years in seconds
 
 # INPUT PARAMETERS: Primary Star
-target = "Algol AB (Beta Persei)"  # Name of system
-m1 = 3.17  # Solar Masses
-r1 = 2.73  # Solar Radii
-L1 = 182 # Solar Luminosity
-primary_color = 'blue'  # Color for primary star in graph
+target = "Test System"  # Name of system
+m1 = 0.82  # Solar Masses
+r1 = 0.783  # Solar Radii
+L1 = 0.37 # Solar Luminosity
+primary_color = 'orange'  # Color for primary star in graph
 
 # INPUT PARAMETERS: Secondary Star
-m2 = 0.70  # Solar Masses
-r2 = 3.48  # r2 < r1 Solar Radii
-L2 = 6.92  # Solar Luminosity
-secondary_color = 'red'  # Color for secondary star in graph
+m2 = 0.60  # Solar Masses
+r2 = 0.608  # r2 < r1 Solar Radii
+L2 = 0.10  # Solar Luminosity
+secondary_color = 'orange'  # Color for secondary star in graph
 
 # INPUT PARAMETERS: Orbital Parameters
-P = 2.867328  # Orbital Period in Days
-i = 98.7  # Inclination Angle in Deg
+P = 0.16348  # Orbital Period in Days
+i = 65.7  # Inclination Angle in Deg
+r_L1_color = "red"  # Color for L1 point in graph
 
 # --------------------------------------------------
 # Calculations (DO NOT CHANGE)
@@ -200,9 +201,9 @@ def r_L1(m1, m2, sma):
     return  sma*np.sqrt(m1)/(np.sqrt(m1) + np.sqrt(m2)) / R_Sol
 # Plot L1 point
 r_l1 = r_L1(m1, m2, sma)
-ax_orbit.plot(r_l1, 0, 'x', color='orange', label='L1 Point', zorder=4)
+ax_orbit.plot(r_l1, 0, 'x', color=r_L1_color, label='L1 Point', zorder=4)
 
-ax_orbit2.plot(-r_l1, 0, 'x', color='orange', label='L1 Point', zorder=4)
+ax_orbit2.plot(-r_l1, 0, 'x', color=r_L1_color, label='L1 Point', zorder=4)
 
 overflow = False
 if r_l1 < r1 or (sma/R_Sol - r_l1) < r2:
