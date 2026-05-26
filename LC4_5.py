@@ -21,17 +21,24 @@ L_Sol = 3.9e26  # Solar Luminosity
 R_Sol = 6.96e8  # Solar Radii
 yr = 365 * 24 * 60 * 60  # Years in seconds
 
-# INPUT PARAMETERS
+# INPUT PARAMETERS: Primary Star
 target = "Algol AB (Beta Persei)"  # Name of system
 m1 = 3.17  # Solar Masses
-m2 = 0.70  # Solar Masses
 r1 = 2.73  # Solar Radii
-r2 = 3.48  # r2 < r1 Solar Radii
-L1 = 182  # Solar Luminosity
-L2 = 6.92  # Solar Luminosity
-P = 2.867328  # Orbital Period in Days
-i = 98.70  # Inclination Angle in Deg
+L1 = 182 # Solar Luminosity
+primary_color = 'blue'  # Color for primary star in graph
 
+# INPUT PARAMETERS: Secondary Star
+m2 = 0.70  # Solar Masses
+r2 = 3.48  # r2 < r1 Solar Radii
+L2 = 6.92  # Solar Luminosity
+secondary_color = 'red'  # Color for secondary star in graph
+
+# INPUT PARAMETERS: Orbital Parameters
+P = 2.867328  # Orbital Period in Days
+i = 98.7  # Inclination Angle in Deg
+
+# --------------------------------------------------
 # Calculations (DO NOT CHANGE)
 A1 = np.pi * r1**2  # Area of Star 1 in R_Solar^2
 A2 = np.pi * r2**2  # Area of Star 2 in R_Solar^2
@@ -70,10 +77,32 @@ def d(t):
 def A_c(t):
     """Projected Area Eclipsed"""
     d_val = d(t)
-    term1 = r1**2 * np.arccos((d_val**2 + r1**2 - r2**2)/(2*d_val*r1))
-    term2 = r2**2 * np.arccos((d_val**2 + r2**2 - r1**2)/(2*d_val*r2))
-    term3 = 0.5 * np.sqrt((d_val**2 - (r2 - r1)**2) * ((r1 + r2)**2 - d_val**2))
-    return term1 + term2 - term3
+    if np.isscalar(d_val):
+        if d_val >= (r1 + r2):
+            return 0.0      
+        if d_val <= abs(r1 - r2):
+            return np.pi * min(r1, r2)**2
+        arg1 = np.clip((d_val**2 + r1**2 - r2**2)/(2*d_val*r1), -1.0, 1.0)
+        arg2 = np.clip((d_val**2 + r2**2 - r1**2)/(2*d_val*r2), -1.0, 1.0)
+        term1 = r1**2 * np.arccos(arg1)
+        term2 = r2**2 * np.arccos(arg2)
+        term3 = 0.5 * np.sqrt(max(0.0, (d_val**2 - (r2 - r1)**2) * ((r1 + r2)**2 - d_val**2)))
+        return term1 + term2 - term3
+    d_val = np.asarray(d_val, dtype=float)
+    area = np.zeros_like(d_val)
+    outside = d_val >= (r1 + r2)
+    inside = d_val <= abs(r1 - r2)
+    overlap = (~outside) & (~inside)
+    area[inside] = np.pi * min(r1, r2)**2
+    if np.any(overlap):
+        d_ov = d_val[overlap]
+        arg1 = np.clip((d_ov**2 + r1**2 - r2**2)/(2*d_ov*r1), -1.0, 1.0)
+        arg2 = np.clip((d_ov**2 + r2**2 - r1**2)/(2*d_ov*r2), -1.0, 1.0)
+        term1 = r1**2 * np.arccos(arg1)
+        term2 = r2**2 * np.arccos(arg2)
+        term3 = 0.5 * np.sqrt(np.clip((d_ov**2 - (r2 - r1)**2) * ((r1 + r2)**2 - d_ov**2), 0.0, None))
+        area[overlap] = term1 + term2 - term3
+    return area
 
 # Times (DO NOT CHANGE)
 t1 = 0  # First Contact
@@ -86,9 +115,13 @@ def L_PE1(t):
 def L_PE2(t):
     """Primary Eclipse luminosity (total)"""
     if np.isscalar(t):
-        return L2 + ((A1 - A2)/A1) * L1
+        if r1 >= r2:
+            return L2 + ((A1 - A2)/A1) * L1
+        return L2
     else:
-        return np.full_like(t, L2 + ((A1 - A2)/A1) * L1)
+        if r1 >= r2:
+            return np.full_like(t, L2 + ((A1 - A2)/A1) * L1)
+        return np.full_like(t, L2)
 
 # Secondary Eclipse Functions (DO NOT CHANGE)
 def L_SE1(t):
@@ -98,9 +131,13 @@ def L_SE1(t):
 def L_SE2(t):
     """Secondary Eclipse luminosity (total)"""
     if np.isscalar(t):
-        return L1
+        if r1 >= r2:
+            return L1
+        return L1 + ((A2 - A1)/A2) * L2
     else:
-        return np.full_like(t, L1)
+        if r1 >= r2:
+            return np.full_like(t, L1)
+        return np.full_like(t, L1 + ((A2 - A1)/A2) * L2)
 
 # Full Flux (DO NOT CHANGE)
 def L_full(t):
@@ -134,14 +171,14 @@ t_full2 = np.linspace(P/2 + t_total, P, 1000)
 ax_top.plot(t_primary, L_PE1(t_primary), 'red', label='Primary Eclipse')
 
 # Plot Full Flux
-ax_top.plot(t_full1, L_full(t_full1), 'black', label='Full Flux 1')
+ax_top.plot(t_full1, L_full(t_full1), 'black', label='Full Flux')
 ax_top.plot(t_full2, L_full(t_full2), 'black')
 
 # Plot Secondary Eclipse
 ax_top.plot(t_secondary, L_SE1(t_secondary), 'blue', label='Secondary Eclipse')
 
 # Check for total eclipse condition
-if b_h <= (r1 - r2):
+if b_h <= abs(r1 - r2):
     val = np.sqrt((((r1 - r2)**2 - b_h**2) * w**2 * R_Sol**2)/v_rel**2)
     t2 = (-np.arcsin(val) + phi)/w
     t3 = (np.arcsin(val) + phi)/w
@@ -154,10 +191,28 @@ if b_h <= (r1 - r2):
     t_se_total = np.linspace(P/2 + t2, P/2 + t3, 1000)
     ax_top.plot(t_se_total, L_SE2(t_se_total), 'blue')
 
+
+# Determine if Roche Lobe Overflow Occurs
+def r_L1(m1, m2, sma):
+    """Calculate Roche Lobe Radius for m1"""
+    m1 = m1 * M_Sol
+    m2 = m2 * M_Sol
+    return  sma*np.sqrt(m1)/(np.sqrt(m1) + np.sqrt(m2)) / R_Sol
+# Plot L1 point
+r_l1 = r_L1(m1, m2, sma)
+ax_orbit.plot(r_l1, 0, 'x', color='orange', label='L1 Point', zorder=4)
+
+ax_orbit2.plot(-r_l1, 0, 'x', color='orange', label='L1 Point', zorder=4)
+
+overflow = False
+if r_l1 < r1 or (sma/R_Sol - r_l1) < r2:
+    overflow = True
+    print("Roche Lobe Overflow Occurs: Mass transfer likely.")
+
 # Set plot properties
 ax_top.set_title(f"{target}\nm₁ = {m1} M☉, r₁ = {r1} R☉, L₁ = {L1} L☉," +
                   f"    m₂ = {m2} M☉, r₂ = {r2} R☉, L₂ = {L2} L☉\n" +
-                  f"P = {P/(24*60**2):.3f} d, a = {sma/AU:.4f} AU, e = 0.000, i = {i}°\nEclipse Duration: {t_total/60:.3f} min, Impact Parameter b = {b_h/r1:.3f}")
+                  f"P = {P/(24*60**2):.3f} d, a = {sma/AU:.4f} AU, e = 0.000, i = {i}°\nEclipse Duration: {t_total/60:.3f} min, Impact Parameter b = {b_h/r1:.3f}, Roche Lobe Overflow: {'Yes' if overflow else 'No'}")
 ax_top.set_xlabel("Seconds")
 ax_top.set_ylabel("Solar Luminosities")
 ax_top.set_xlim([0, P])
@@ -165,7 +220,7 @@ ax_top.set_ylim([0, 1.2*L_total])
 ax_top.legend(loc='upper left', ncol = 3)
 
 # Plot orbital diagram
-ax_orbit.set_title(f"Full Flux 1\n{t_total:.2f} < t = {P/2:.2f} s")
+ax_orbit.set_title(f"Full Flux 1\n{t_total/60:.2f} < t < {(P/2/60):.2f} min\nL = {L_total:.2f} L☉")
 ax_orbit.set_xlabel("Solar Radii R☉")
 ax_orbit.set_ylabel("Solar Radii R☉")
 ax_orbit.set_xlim([-1.5*sma/R_Sol, 1.5*sma/R_Sol])
@@ -173,49 +228,49 @@ ax_orbit.set_ylim([-1.5*sma/R_Sol, 1.5*sma/R_Sol])
 
 # Plot circular orbit projected as ellipse
 orbit = Ellipse(xy=(0, 0), width=2*sma/R_Sol, height=2*sma/R_Sol*np.sin(np.radians(90-i)), angle=0, 
-              edgecolor='black', fc='None', lw=1, label='Circular Orbit', zorder=3)
+              edgecolor='black', fc='None', lw=1, label='Sky-Projected Orbit', zorder=3)
 ax_orbit.add_patch(orbit)
 
 # Plot stars
-primarystar = plt.Circle((0, 0), r1, color='red', fill=True, label='Primary Star', zorder=2)
-secondarystar = plt.Circle((sma/R_Sol, 0), r2, color='blue', fill=True, label='Secondary Star', zorder=1)
+primarystar = plt.Circle((0, 0), r1, color=primary_color, fill=True, label='m1', zorder=2)
+secondarystar = plt.Circle((sma/R_Sol, 0), r2, color=secondary_color, fill=True, label='m2', zorder=1)
 ax_orbit.add_patch(primarystar)
 ax_orbit.add_patch(secondarystar)
 
 # Plot the primary eclipse
-ax_primaryeclipse.set_title(f"Primary Eclipse\n0 < t < {t_total:.2f} s")
+ax_primaryeclipse.set_title(f"Primary Eclipse\n0 < t < {(t_total)/60:.2f} min\nL = {L_PE1(t_total/2):.2f} L☉")
 ax_primaryeclipse.set_xlabel("Solar Radii R☉")
 ax_primaryeclipse.set_ylabel("Solar Radii R☉")
 ax_primaryeclipse.set_xlim([-1.5*sma/R_Sol, 1.5*sma/R_Sol])
 ax_primaryeclipse.set_ylim([-1.5*sma/R_Sol, 1.5*sma/R_Sol])
 
 ax_primaryeclipse.add_patch(Ellipse(xy=(0, 0), width=2*sma/R_Sol, height=2*sma/R_Sol*np.sin(np.radians(90-i)), angle=0, 
-              edgecolor='black', fc='None', lw=1, label='Circular Orbit', zorder=3))
-ax_primaryeclipse.add_patch(Circle((0, 0), r1, color='red', label='Primary Star', zorder=1))
-ax_primaryeclipse.add_patch(Circle((0, -sma/R_Sol*np.sin(np.radians(90-i))), r2, color='blue', label='Secondary Star', zorder=2))
-ax_primaryeclipse.legend(loc='upper left')
+              edgecolor='black', fc='None', lw=1, label='Sky-Projected Orbit', zorder=3))
+ax_primaryeclipse.add_patch(Circle((0, 0), r1, color=primary_color, label='m1', zorder=1))
+ax_primaryeclipse.add_patch(Circle((0, -sma/R_Sol*np.sin(np.radians(90-i))), r2, color=secondary_color, label='m2', zorder=2))
 
 # Plot the secondary eclipse
-ax_secondaryeclipse.set_title(f"Secondary Eclipse\n{P/2:.2f} < t < {P/2 + t_total:.2f} s")
+ax_secondaryeclipse.set_title(f"Secondary Eclipse\n{(P/2)/60:.2f} < t < {(P/2 + t_total)/60:.2f} min\nL = {L_SE1(P/2 + t_total/2):.2f} L☉")
 ax_secondaryeclipse.set_xlabel("Solar Radii R☉")
 ax_secondaryeclipse.set_ylabel("Solar Radii R☉")
 ax_secondaryeclipse.set_xlim([-1.5*sma/R_Sol, 1.5*sma/R_Sol])
 ax_secondaryeclipse.set_ylim([-1.5*sma/R_Sol, 1.5*sma/R_Sol])
 ax_secondaryeclipse.add_patch(Ellipse(xy=(0, 0), width=2*sma/R_Sol, height=2*sma/R_Sol*np.sin(np.radians(90-i)), angle=0, 
-              edgecolor='black', fc='None', lw=1, label='Circular Orbit', zorder=3))
-ax_secondaryeclipse.add_patch(Circle((0, 0), r1, color='red', label='Primary Star', zorder=2))
-ax_secondaryeclipse.add_patch(Circle((0, -sma/R_Sol*np.sin(np.radians(90-i))), r2, color='blue', label='Secondary Star', zorder=1))
+              edgecolor='black', fc='None', lw=1, label='Sky-Projected Orbit', zorder=3))
+ax_secondaryeclipse.add_patch(Circle((0, 0), r1, color=primary_color, label='m1', zorder=2))
+ax_secondaryeclipse.add_patch(Circle((0, -sma/R_Sol*np.sin(np.radians(90-i))), r2, color=secondary_color, label='m2', zorder=1))
 
 # Plot Full Flux 2
-ax_orbit2.set_title(f"Full Flux 2\n{P/2 + t_total:.2f} < t < {P:.2f} s")
+ax_orbit2.set_title(f"Full Flux 2\n{(P/2 + t_total)/60:.2f} < t < {(P)/60:.2f} min\nL = {L_total:.2f} L☉")
 ax_orbit2.set_xlabel("Solar Radii R☉")
 ax_orbit2.set_ylabel("Solar Radii R☉")
 ax_orbit2.set_xlim([-1.5*sma/R_Sol, 1.5*sma/R_Sol])
 ax_orbit2.set_ylim([-1.5*sma/R_Sol, 1.5*sma/R_Sol])
 ax_orbit2.add_patch(Ellipse(xy=(0, 0), width=2*sma/R_Sol, height=2*sma/R_Sol*np.sin(np.radians(90-i)), angle=0, 
-              edgecolor='black', fc='None', lw=1, label='Circular Orbit', zorder=3))
-ax_orbit2.add_patch(Circle((0, 0), r1, color='red', label='Primary Star', zorder=2))
-ax_orbit2.add_patch(Circle((-sma/R_Sol, 0), r2, color='blue', label='Secondary Star', zorder=1))
+              edgecolor='black', fc='None', lw=1, label='Sky-Projected Orbit', zorder=3))
+ax_orbit2.add_patch(Circle((0, 0), r1, color=primary_color, label='m1', zorder=2))
+ax_orbit2.add_patch(Circle((-sma/R_Sol, 0), r2, color=secondary_color, label='m2', zorder=1))
+ax_orbit2.legend(loc = "lower center",bbox_to_anchor=(-1.5, -0.35), ncol=4)
 
 if (i < i_min):
     print("No Eclipse Occurs: Inclination too low.")
@@ -226,6 +281,7 @@ if (i < i_min):
 elif (P < P_min):
     print("Invalid System: Orbital Period too short for given star sizes.")
 
+
 print(f"Orbital Period: {P/(24*60*60):.3f} days")
 print(f"Semi-major axis: {sma/AU:.4f} AU")
 print(f"Transit Duration: {t_total/60:.3f} minutes")
@@ -233,6 +289,7 @@ print(f"Impact Parameter: {b_h:.3f} R☉,    b/r₁ = {b_h/r1:.3f}")
 print(f"Minimum Inclination for Eclipse: {i_min:.2f}°")
 print(f"Minimum Possible Orbital Period: {P_min/(24*60*60):.3f} days")
 print(f"Minimum Grazing Eclipse Inclination: {i_grazing:.2f}°")
+print(f"Roche Lobe Radius for m₁: {r_L1(m1, m2, sma):.3f} R☉")
 
 fig.savefig('binarycurve.png', dpi=500, bbox_inches='tight')
 print("Graph saved as 'binarycurve.png'")
