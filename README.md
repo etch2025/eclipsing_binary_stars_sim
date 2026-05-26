@@ -4,12 +4,19 @@
 Python Version: LC4_5.py  
 Desmos Version: https://www.desmos.com/calculator/hvjfjnlnyz**
 
-<img width="6224" height="4661" alt="image" src="https://github.com/user-attachments/assets/abf6c04d-51fa-4d48-a10b-019ac0a84b05" />
+<img width="6321" height="4925" alt="image" src="https://github.com/user-attachments/assets/fb5880f9-1a8d-4bfc-9f83-3fb4001799f7" />
 
 Major Assumptions:
 - Uniform Luminosity Distribution (No limb darkening, luminosity/projected area = const)
 - Circular Orbit (e = 0)
 - Celestial bodies m1 and m2 is perfectly spherical with projected areas being perfectly circular
+
+Outputs:
+- Light Curve and Orbital Diagram
+- Eclipse Luminosity and Duration
+- Points of Contact
+- Impact Parameter
+- L1 Point (Roche Lobe Overflow)
 
 Input Variable Units:
 - Mass (m1, m2): Solar Masses
