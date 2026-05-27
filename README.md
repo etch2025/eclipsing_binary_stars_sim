@@ -4,7 +4,7 @@
 MATLAB Version: LC4_5.m  
 Desmos Version: https://www.desmos.com/calculator/hvjfjnlnyz  
 
-<img width="6321" height="4925" alt="image" src="https://github.com/user-attachments/assets/fb5880f9-1a8d-4bfc-9f83-3fb4001799f7" />
+<img width="6221" height="4925" alt="image" src="https://github.com/user-attachments/assets/0d59e0d0-74b4-499f-a15f-da02269ea555" />
 
 Major Assumptions:
 - Uniform Luminosity Distribution (No limb darkening, luminosity/projected area = const)
