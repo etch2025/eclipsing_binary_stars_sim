@@ -22,21 +22,21 @@ R_Sol = 6.96e8  # Solar Radii
 yr = 365 * 24 * 60 * 60  # Years in seconds
 
 # INPUT PARAMETERS: Primary Star
-target = "Test System"  # Name of system
-m1 = 0.82  # Solar Masses
-r1 = 0.783  # Solar Radii
-L1 = 0.37 # Solar Luminosity
-primary_color = 'orange'  # Color for primary star in graph
+target = "QX Andromedae"  # Name of system
+m1 = 1.47  # Solar Masses
+r1 = 1.46  # Solar Radii
+L1 = 3.303 # Solar Luminosity
+primary_color = 'deepskyblue'  # Color for primary star in graph
 
 # INPUT PARAMETERS: Secondary Star
-m2 = 0.60  # Solar Masses
-r2 = 0.608  # r2 < r1 Solar Radii
-L2 = 0.10  # Solar Luminosity
+m2 = 0.5  # Solar Masses
+r2 = 1.85  # r2 < r1 Solar Radii
+L2 = 1.185  # Solar Luminosity
 secondary_color = 'orange'  # Color for secondary star in graph
 
 # INPUT PARAMETERS: Orbital Parameters
-P = 0.16348  # Orbital Period in Days
-i = 65.7  # Inclination Angle in Deg
+P = 0.4121716  # Orbital Period in Days
+i = 54.6  # Inclination Angle in Deg
 r_L1_color = "red"  # Color for L1 point in graph
 
 # --------------------------------------------------
@@ -217,8 +217,13 @@ ax_top.set_title(f"{target}\nm₁ = {m1} M☉, r₁ = {r1} R☉, L₁ = {L1} L�
 ax_top.set_xlabel("Seconds")
 ax_top.set_ylabel("Solar Luminosities")
 ax_top.set_xlim([0, P])
-ax_top.set_ylim([0, 1.2*L_total])
-ax_top.legend(loc='upper left', ncol = 3)
+
+primary_eclipse_luminosity = L_PE1(t_total/2)
+secondary_eclipse_luminosity = L_SE1(P/2 + t_total/2)
+if (primary_eclipse_luminosity <= secondary_eclipse_luminosity):
+    ax_top.set_ylim([primary_eclipse_luminosity - 0.05*primary_eclipse_luminosity, 1.05*L_total])
+else:
+    ax_top.set_ylim([secondary_eclipse_luminosity - 0.05*secondary_eclipse_luminosity, 1.05*L_total])
 
 # Plot orbital diagram
 ax_orbit.set_title(f"Full Flux 1\n{t_total/60:.2f} < t < {(P/2/60):.2f} min\nL = {L_total:.2f} L☉")
@@ -239,7 +244,7 @@ ax_orbit.add_patch(primarystar)
 ax_orbit.add_patch(secondarystar)
 
 # Plot the primary eclipse
-ax_primaryeclipse.set_title(f"Primary Eclipse\n0 < t < {(t_total)/60:.2f} min\nL = {L_PE1(t_total/2):.2f} L☉")
+ax_primaryeclipse.set_title(f"Primary Eclipse\n0 < t < {(t_total)/60:.2f} min\nL = {primary_eclipse_luminosity:.2f} L☉")
 ax_primaryeclipse.set_xlabel("Solar Radii R☉")
 ax_primaryeclipse.set_ylabel("Solar Radii R☉")
 ax_primaryeclipse.set_xlim([-1.5*sma/R_Sol, 1.5*sma/R_Sol])
@@ -251,7 +256,7 @@ ax_primaryeclipse.add_patch(Circle((0, 0), r1, color=primary_color, label='m1', 
 ax_primaryeclipse.add_patch(Circle((0, -sma/R_Sol*np.sin(np.radians(90-i))), r2, color=secondary_color, label='m2', zorder=2))
 
 # Plot the secondary eclipse
-ax_secondaryeclipse.set_title(f"Secondary Eclipse\n{(P/2)/60:.2f} < t < {(P/2 + t_total)/60:.2f} min\nL = {L_SE1(P/2 + t_total/2):.2f} L☉")
+ax_secondaryeclipse.set_title(f"Secondary Eclipse\n{(P/2)/60:.2f} < t < {(P/2 + t_total)/60:.2f} min\nL = {secondary_eclipse_luminosity:.2f} L☉")
 ax_secondaryeclipse.set_xlabel("Solar Radii R☉")
 ax_secondaryeclipse.set_ylabel("Solar Radii R☉")
 ax_secondaryeclipse.set_xlim([-1.5*sma/R_Sol, 1.5*sma/R_Sol])
