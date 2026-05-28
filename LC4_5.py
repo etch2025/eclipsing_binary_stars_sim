@@ -22,21 +22,21 @@ R_Sol = 6.96e8  # Solar Radii
 yr = 365 * 24 * 60 * 60  # Years in seconds
 
 # INPUT PARAMETERS: Primary Star
-target = "AO Cassiopeiae (HD 1337)"  # Name of system
-m1 = 15.59  # Solar Masses
-r1 = 4.61  # Solar Radii
-L1 = 66000 # Solar Luminosity
+target = "Algol AB (Beta Persei)"  # Name of system
+m1 = 3.17  # Solar Masses
+r1 = 2.73  # Solar Radii
+L1 = 182 # Solar Luminosity
 primary_color = 'deepskyblue'  # Color for primary star in graph
 
 # INPUT PARAMETERS: Secondary Star
-m2 = 9.65  # Solar Masses
-r2 = 9.43  # r2 < r1 Solar Radii
-L2 = 115000  # Solar Luminosity
-secondary_color = 'lightblue'  # Color for secondary star in graph
+m2 = 0.7  # Solar Masses
+r2 = 3.48  # r2 < r1 Solar Radii
+L2 = 6.92  # Solar Luminosity
+secondary_color = 'orange'  # Color for secondary star in graph
 
 # INPUT PARAMETERS: Orbital Parameters
-P = 3.523488  # Orbital Period in Days
-i = 65.7 # Inclination Angle in Deg
+P = 2.867328  # Orbital Period in Days
+i = 98.7 # Inclination Angle in Deg
 r_L1_color = "red"  # Color for L1 point in graph
 
 
