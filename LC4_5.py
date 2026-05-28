@@ -300,9 +300,12 @@ if (r1 + r2)*R_Sol <= sma or P >= P_min:
 elif (r1 + r2) > sma/R_Sol:
     ax_top.set_title(f"Invalid System\nStars are too large for orbital radius and orbital period is too short for eclipse to occur.\nr1 + r2: {r1+r2} R☉,    SMA: {sma/R_Sol:.3f} R☉,    Minimum Possible Period: {P_min/(24*60*60):.3f} days < P = {P/(24*60*60):.3f} days\nMinimum Eclipse Inclinations: {i_min:.2f}°  < i < {i_min2:.2f}°")
 
-if (i_min <= i <= i_min2 == False):
+if ((i_min >= i) == True or (i >= i_min2) == True):
         print("No Eclipse Occurs: Inclination too low.")
         t_full = np.linspace(0, P, 1000)
+        ax_top.set_ylim([0, 1.05*L_total])
         ax_top.plot(t_full, L_full(t_full), 'black', label='Full Flux')
-
+        ax_primaryeclipse.set_title(f"Primary Eclipse\n0 < t < {(t_total)/60:.2f} min\nL = {L_total:.2f} L☉")
+        ax_secondaryeclipse.set_title(f"Secondary Eclipse\n0 < t < {(t_total)/60:.2f} min\nL = {L_total:.2f} L☉")
+        
 fig.savefig('binarycurve.png', dpi=500, bbox_inches='tight')
