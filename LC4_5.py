@@ -22,21 +22,21 @@ R_Sol = 6.96e8  # Solar Radii
 yr = 365 * 24 * 60 * 60  # Years in seconds
 
 # INPUT PARAMETERS: Primary Star
-target = "QX Andromedae"  # Name of system
-m1 = 1.47  # Solar Masses
-r1 = 1.46  # Solar Radii
-L1 = 3.303 # Solar Luminosity
+target = "AO Cassiopeiae (HD 1337)"  # Name of system
+m1 = 15.59  # Solar Masses
+r1 = 4.61  # Solar Radii
+L1 = 66000 # Solar Luminosity
 primary_color = 'deepskyblue'  # Color for primary star in graph
 
 # INPUT PARAMETERS: Secondary Star
-m2 = 0.5  # Solar Masses
-r2 = 0.85  # r2 < r1 Solar Radii
-L2 = 1.185  # Solar Luminosity
-secondary_color = 'orange'  # Color for secondary star in graph
+m2 = 9.65  # Solar Masses
+r2 = 9.43  # r2 < r1 Solar Radii
+L2 = 115000  # Solar Luminosity
+secondary_color = 'lightblue'  # Color for secondary star in graph
 
 # INPUT PARAMETERS: Orbital Parameters
-P = 0.4121716  # Orbital Period in Days
-i = 160  # Inclination Angle in Deg
+P = 3.523488  # Orbital Period in Days
+i = 65.7 # Inclination Angle in Deg
 r_L1_color = "red"  # Color for L1 point in graph
 
 
@@ -291,14 +291,14 @@ if (r1 + r2)*R_Sol <= sma or P >= P_min:
     print(f"Semi-major axis: {sma/AU:.4f} AU")
     print(f"Transit Duration: {t_total/60:.3f} minutes")
     print(f"Impact Parameter: {b_h:.3f} R☉,    b/r₁ = {b_h/r1:.3f}")
-    print(f"Minimum Inclination for Eclipse: {i_min:.2f}°")
-    print(f"Minimum Possible Orbital Period: {P_min/(24*60*60):.3f} days")
-    print(f"Minimum Grazing Eclipse Inclination: {i_grazing:.2f}°")
+    print(f"Minimum Inclination for Eclipse: {i_min:.2f}° < i < {i_min2:.2f}°")
+    print(f"Minimum Possible Orbital Period: {P_min/(24*60*60):.3f} <= P < {P/(24*60*60):.3f} days")
+    print(f"Minimum Grazing Eclipse Inclination: {i_grazing:.2f}° < i < {i_grazing2:.2f}°")
     print(f"Roche Lobe Radius for m₁: {r_L1(m1, m2, sma):.3f} R☉")
     print("Graph saved as 'binarycurve.png'")
 
-else:
-    ax_top.set_title(f"Invalid System\nStars are too large for orbital radius or orbital period is too short for eclipse to occur.\nr1 + r2: {r1+r2} R☉,    SMA: {sma/R_Sol:.3f} R☉,    P: {P/(24*60*60):.3f} days\nMinimum Eclipse Inclinations: {i_min:.2f} < i < {i_min2:.2f}\nMinimum Period: P > {P_min/(24*60*60):.3f} days")
+elif (r1 + r2) > sma/R_Sol:
+    ax_top.set_title(f"Invalid System\nStars are too large for orbital radius and orbital period is too short for eclipse to occur.\nr1 + r2: {r1+r2} R☉,    SMA: {sma/R_Sol:.3f} R☉,    Minimum Possible Period: {P_min/(24*60*60):.3f} days < P = {P/(24*60*60):.3f} days\nMinimum Eclipse Inclinations: {i_min:.2f}°  < i < {i_min2:.2f}°")
 
 if (i_min <= i <= i_min2 == False):
         print("No Eclipse Occurs: Inclination too low.")
