@@ -31,7 +31,7 @@ primary_color = 'deepskyblue'  # Color for primary star in graph
 # INPUT PARAMETERS: Secondary Star
 m2 = 0.7  # Solar Masses
 r2 = 3.48  # r2 < r1 Solar Radii
-L2 = 6.92  # Solar Luminosity
+L2 = 600.92  # Solar Luminosity
 secondary_color = 'orange'  # Color for secondary star in graph
 
 # INPUT PARAMETERS: Orbital Parameters
