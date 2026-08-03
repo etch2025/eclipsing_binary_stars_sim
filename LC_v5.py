@@ -37,7 +37,7 @@ omega = 0.0        # Argument of Periastron in Deg (orientation of ellipse in or
 r_L1_color = "red"
 
 N_SAMPLES = 5 * 10**6   # Time resolution for the numerical scan (higher = smoother/sharper eclipses)
-N_PERIODS = 1        # How many consecutive periods to display on the light curve plot (>= 1)
+N_PERIODS = 4        # How many consecutive periods to display on the light curve plot (>= 1)
 
 # --------------------------------------------------
 # Derived Quantities (DO NOT CHANGE)
@@ -261,7 +261,7 @@ for ax in (ax_top, ax_p1, ax_p2, ax_p3, ax_p4):
 if not eclipses_occur:
     # No eclipse: flat full-flux light curve, four identical "full system" panels
     for k in range(N_PERIODS):
-        ax_top.plot(t_arr + k * P, L_arr, 'black', label='Full Flux' if k == 0 else None)
+        ax_top.plot(t_arr / P + k, L_arr, 'black', label='Full Flux' if k == 0 else None)
     ax_top.set_ylim([0, 1.05 * L_total])
     print("No Eclipse Occurs: inclination/eccentricity/geometry do not produce a transit.")
     panel_axes = [ax_p1, ax_p2, ax_p3, ax_p4]
@@ -330,12 +330,12 @@ else:
     # since the underlying t_arr/L_arr/segments are one period's worth of data and simply
     # recur every P seconds.
     for k in range(N_PERIODS):
-        offset = k * P
-        ax_top.plot(t_arr + offset, L_arr, color='black', lw=1.2)
+        offset = k
+        ax_top.plot(t_arr / P + offset, L_arr, color='black', lw=1.2)
         for seg in pe_segs:
-            ax_top.plot(t_arr[seg] + offset, L_arr[seg], color='red', lw=1.5)
+            ax_top.plot(t_arr[seg] / P + offset, L_arr[seg], color='red', lw=1.5)
         for seg in se_segs:
-            ax_top.plot(t_arr[seg] + offset, L_arr[seg], color='blue', lw=1.5)
+            ax_top.plot(t_arr[seg] / P + offset, L_arr[seg], color='blue', lw=1.5)
     legend_lines = [Line2D([0], [0], color='black', label='Full Flux'),
                      Line2D([0], [0], color='red', label='Primary Eclipse'),
                      Line2D([0], [0], color='blue', label='Secondary Eclipse')]
@@ -383,9 +383,9 @@ else:
         + (f"Eclipse Duration {pe['duration']/60:.2f} min, b = {pe['d_min']/r1:.3f}   " if pe or se else "No Eclipse Occurs  ")
     )
 
-ax_top.set_xlabel("Seconds")
+ax_top.set_xlabel("Phase")
 ax_top.set_ylabel("Solar Luminosities")
-ax_top.set_xlim([0, N_PERIODS * P])
+ax_top.set_xlim([0, N_PERIODS])
 
 # --------------------------------------------------
 # Orbit / eclipse-geometry panels
