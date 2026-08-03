@@ -37,7 +37,7 @@ omega = 0.0        # Argument of Periastron in Deg (orientation of ellipse in or
 r_L1_color = "red"
 
 N_SAMPLES = 5 * 10**6   # Time resolution for the numerical scan (higher = smoother/sharper eclipses)
-N_PERIODS = 1        # How many consecutive periods to display on the light curve plot (>= 1)
+N_PERIODS = 3        # How many consecutive periods to display on the light curve plot (>= 1)
 
 # --------------------------------------------------
 # Derived Quantities (DO NOT CHANGE)
