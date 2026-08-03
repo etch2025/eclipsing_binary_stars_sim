@@ -4,7 +4,7 @@
 MATLAB Version: LC4_5.m  
 Desmos Version: https://www.desmos.com/calculator/hvjfjnlnyz  
 
-<img width="6221" height="4925" alt="image" src="Algol AB (Beta Persei)_2.867d_0.062AU_0.000.png.png" />
+<img width="6221" height="4925" alt="image" src="Algol AB (Beta Persei)_2.867d_0.062AU_0.000.png" />
 
 Major Assumptions:
 - Uniform Luminosity Distribution (No limb darkening, luminosity/projected area = const)
