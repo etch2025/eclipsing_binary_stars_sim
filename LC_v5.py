@@ -409,7 +409,7 @@ for ax, t_val, title in zip(panel_axes, panel_times, panel_titles):
     ax.set_ylabel(r"Solar Radii $R_\odot$")
     ax.set_title(rf"{title}" + "\n" + rf"t = {t_val/60:.2f} min" + "\n" + rf"L = {L_t:.2f} $L_\odot$")
 
-    ax.plot(orbit_x, orbit_y, color='black', lw=1, zorder=3)
+    ax.plot(orbit_x, orbit_y, color='black', lw=1, zorder=1)
     star1 = Circle((0, 0), r1, color=primary_color, label='m1', zorder=(2 if z_t >= 0 else 4))
     star2 = Circle((x_t, y_t), r2, color=secondary_color, label='m2', zorder=(4 if z_t >= 0 else 2))
     ax.add_patch(star1)
