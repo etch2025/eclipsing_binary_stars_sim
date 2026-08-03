@@ -14,25 +14,25 @@ R_Sol = 6.96e8     # Solar Radii
 yr = 365 * 24 * 60 * 60  # Years in seconds
 
 # INPUT PARAMETERS: Primary Star
-target = "Algol AB (Beta Persei)"
-m1 = 3.17           # Solar Masses
-r1 = 2.73           # Solar Radii
-L1 = 182            # Solar Luminosity
+target = "TX Leonis (HD 91636)"
+m1 = 2.75           # Solar Masses
+r1 = 3.49           # Solar Radii
+L1 = 73            # Solar Luminosity
 primary_color = 'deepskyblue'
 
 # INPUT PARAMETERS: Secondary Star
-m2 = 0.7            # Solar Masses
-r2 = 3.48           # Solar Radii
-L2 = 6.92           # Solar Luminosity
+m2 = 1.05           # Solar Masses
+r2 = 2.10           # Solar Radii
+L2 = 6.0           # Solar Luminosity
 secondary_color = 'orange'
 
 # INPUT PARAMETERS: Orbital Elements
 ORBIT_INPUT = "P"  # a
-P = 2.867328        # Orbital Period in Days (used when ORBIT_INPUT == "P")
+P = 2.4450566        # Orbital Period in Days (used when ORBIT_INPUT == "P")
 a_AU = 0.062043     # Semi-Major Axis in AU (used when ORBIT_INPUT == "a")
-i = 98.7            # Inclination Angle in Deg
-e = 0.00            # Eccentricity (0 <= e < 1)
-omega = 0.0        # Argument of Periastron in Deg (orientation of ellipse in orbital plane,
+i = 66.8            # Inclination Angle in Deg
+e = 0.060            # Eccentricity (0 <= e < 1)
+omega = 295.9        # Argument of Periastron in Deg (orientation of ellipse in orbital plane,
                      # measured from the ascending node; t=0 is defined as periastron passage)
 r_L1_color = "red"
 
