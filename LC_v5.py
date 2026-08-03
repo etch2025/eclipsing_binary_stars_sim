@@ -37,7 +37,7 @@ omega = 0.0        # Argument of Periastron in Deg (orientation of ellipse in or
 r_L1_color = "red"
 
 N_SAMPLES = 5 * 10**6   # Time resolution for the numerical scan (higher = smoother/sharper eclipses)
-N_PERIODS = 4        # How many consecutive periods to display on the light curve plot (>= 1)
+N_PERIODS = 1        # How many consecutive periods to display on the light curve plot (>= 1)
 
 # --------------------------------------------------
 # Derived Quantities (DO NOT CHANGE)
@@ -407,7 +407,7 @@ for ax, t_val, title in zip(panel_axes, panel_times, panel_titles):
     ax.set_ylim([-lim, lim])
     ax.set_xlabel(r"Solar Radii $R_\odot$")
     ax.set_ylabel(r"Solar Radii $R_\odot$")
-    ax.set_title(rf"{title}" + "\n" + rf"t = {t_val/60:.2f} min" + "\n" + rf"L = {L_t:.2f} $L_\odot$")
+    ax.set_title(rf"{title}" + "\n" + rf"t = {t_val/P:.4f}" + "\n" + rf"L = {L_t:.3f} $L_\odot$")
 
     ax.plot(orbit_x, orbit_y, color='black', lw=1, zorder=1)
     star1 = Circle((0, 0), r1, color=primary_color, label='m1', zorder=(2 if z_t >= 0 else 4))
