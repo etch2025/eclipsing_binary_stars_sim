@@ -14,25 +14,25 @@ R_Sol = 6.96e8     # Solar Radii
 yr = 365 * 24 * 60 * 60  # Years in seconds
 
 # INPUT PARAMETERS: Primary Star
-target = "TX Leonis (HD 91636)"
-m1 = 2.75           # Solar Masses
-r1 = 3.49           # Solar Radii
-L1 = 73            # Solar Luminosity
+target = "Algol AB (Beta Persei, HD 19356)"
+m1 = 3.17           # Solar Masses
+r1 = 2.73           # Solar Radii
+L1 = 182          # Solar Luminosity
 primary_color = 'deepskyblue'
 
 # INPUT PARAMETERS: Secondary Star
-m2 = 1.05           # Solar Masses
-r2 = 2.10           # Solar Radii
-L2 = 6.0           # Solar Luminosity
+m2 = 0.70           # Solar Masses
+r2 = 3.48           # Solar Radii
+L2 = 6.92          # Solar Luminosity
 secondary_color = 'orange'
 
 # INPUT PARAMETERS: Orbital Elements
 ORBIT_INPUT = "P"  # a
-P = 2.4450566        # Orbital Period in Days (used when ORBIT_INPUT == "P")
+P = 2.867328        # Orbital Period in Days (used when ORBIT_INPUT == "P")
 a_AU = 0.062043     # Semi-Major Axis in AU (used when ORBIT_INPUT == "a")
-i = 66.8            # Inclination Angle in Deg
-e = 0.060            # Eccentricity (0 <= e < 1)
-omega = 295.9        # Argument of Periastron in Deg (orientation of ellipse in orbital plane,
+i = 98.7           # Inclination Angle in Deg
+e = 0.0            # Eccentricity (0 <= e < 1)
+omega = 0        # Argument of Periastron in Deg (orientation of ellipse in orbital plane,
                      # measured from the ascending node; t=0 is defined as periastron passage)
 r_L1_color = "red"
 
@@ -379,8 +379,8 @@ else:
         f"{target}\n"
         rf"m₁ = {m1} $M_\odot$, r₁ = {r1} $R_\odot$, L₁ = {L1} $L_\odot$,    "
         rf"m₂ = {m2} $M_\odot$, r₂ = {r2} $R_\odot$, L₂ = {L2} $L_\odot$" + "\n"
-        f"P = {P/(24*60**2):.3f} d, a = {sma/AU:.4f} AU, e = {e:.3f}, ω = {omega:.1f}°, i = {i}°\n"
-        + (f"Eclipse Duration {pe['duration']/60:.2f} min, b = {pe['d_min']/r1:.3f}   " if pe or se else "No Eclipse Occurs  ")
+        f"P = {P/(24*60**2):.4f} d, a = {sma/AU:.4f} AU, e = {e:.4f}, ω = {omega:.4f}°, i = {i:.4f}°\n"
+        + (f"Eclipse Duration {pe['duration']/60:.4f} min, b = {pe['d_min']/r1:.4f}   " if pe or se else "No Eclipse Occurs  ")
     )
 
 ax_top.set_xlabel("Phase")
@@ -407,7 +407,7 @@ for ax, t_val, title in zip(panel_axes, panel_times, panel_titles):
     ax.set_ylim([-lim, lim])
     ax.set_xlabel(r"Solar Radii $R_\odot$")
     ax.set_ylabel(r"Solar Radii $R_\odot$")
-    ax.set_title(rf"{title}" + "\n" + rf"t = {t_val/P:.4f}" + "\n" + rf"L = {L_t:.3f} $L_\odot$")
+    ax.set_title(rf"{title}" + "\n" + rf"t = {t_val/P:.4f}" + "\n" + rf"L = {L_t:.4f} $L_\odot$")
 
     ax.plot(orbit_x, orbit_y, color='black', lw=1, zorder=1)
     star1 = Circle((0, 0), r1, color=primary_color, label='m1', zorder=(2 if z_t >= 0 else 4))
