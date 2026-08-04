@@ -40,7 +40,7 @@ e = 0.0
 omega = 0.0
 
 # --- Animation-specific settings ---
-N_FRAMES = 200          # frames per orbital period (higher = smoother motion, bigger file)
+N_FRAMES = 10          # frames per orbital period (higher = smoother motion, bigger file)
 N_PERIODS = 2           # how many consecutive orbits to animate through
 FPS = 30                # playback speed
 N_SAMPLES_BG = 5 * 10**6   # resolution of the background light-curve trace, PER PERIOD (doesn't need to match LC_v5's 5e6)
@@ -190,15 +190,36 @@ def eclipse_info(segs, t, d, L):
 info_zpos = eclipse_info(get_segments(primary_mask_p1), t_p1, d_p1, L_p1)
 info_zneg = eclipse_info(get_segments(secondary_mask_p1), t_p1, d_p1, L_p1)
 
-# "Primary" = whichever eclipse is deeper (lower L_min), matching LC_v5.py's convention
+# Conjunction geometry (always available -- diagnostics still print with no eclipse)
+nu_c_zpos = np.radians(90.0 - omega)
+nu_c_zneg = np.radians(270.0 - omega)
+r_c_zpos = a_Rsol * (1 - e**2) / (1 + e * np.cos(nu_c_zpos))
+r_c_zneg = a_Rsol * (1 - e**2) / (1 + e * np.cos(nu_c_zneg))
+
+# "Primary" = whichever eclipse is deeper (lower L_min), matching LC_v5.py's convention.
+# Conjunction (nu_c, r_c) follow that same depth-based assignment; if no eclipse occurs,
+# keep the geometric z>0 / z<0 labeling so impact parameter / i_min still print.
 if info_zpos and info_zneg:
-    pe, se = (info_zpos, info_zneg) if info_zpos['L_min'] <= info_zneg['L_min'] else (info_zneg, info_zpos)
+    if info_zpos['L_min'] <= info_zneg['L_min']:
+        pe, se = info_zpos, info_zneg
+        nu_c_pe, r_c_pe = nu_c_zpos, r_c_zpos
+        nu_c_se, r_c_se = nu_c_zneg, r_c_zneg
+    else:
+        pe, se = info_zneg, info_zpos
+        nu_c_pe, r_c_pe = nu_c_zneg, r_c_zneg
+        nu_c_se, r_c_se = nu_c_zpos, r_c_zpos
 elif info_zpos:
     pe, se = info_zpos, None
+    nu_c_pe, r_c_pe = nu_c_zpos, r_c_zpos
+    nu_c_se, r_c_se = nu_c_zneg, r_c_zneg
 elif info_zneg:
     pe, se = info_zneg, None
+    nu_c_pe, r_c_pe = nu_c_zneg, r_c_zneg
+    nu_c_se, r_c_se = nu_c_zpos, r_c_zpos
 else:
     pe, se = None, None
+    nu_c_pe, r_c_pe = nu_c_zpos, r_c_zpos
+    nu_c_se, r_c_se = nu_c_zneg, r_c_zneg
 
 pe_Lmin = pe['L_min'] if pe else None
 se_Lmin = se['L_min'] if se else None
@@ -294,5 +315,58 @@ if OUTPUT_FILE.endswith('.gif'):
     ani.save(OUTPUT_FILE, writer='pillow', fps=FPS)
 else:
     ani.save(OUTPUT_FILE, writer='ffmpeg', fps=FPS)
+
+# --------------------------------------------------
+# Diagnostic prints (same set as LC_v5.py; computed even when no eclipse occurs)
+r_peri = a_Rsol * (1 - e)
+print(f"Orbital Period: {P/(24*60*60):.3f} days")
+print(f"Semi-major axis: {sma/AU:.4f} AU   (periastron: {r_peri:.3f} R☉, apastron: {a_Rsol*(1+e):.3f} R☉)")
+print(f"Eccentricity: {e:.3f}   Argument of Periastron: {omega:.1f}°")
+if pe:
+    print(f"Primary Eclipse:   duration {pe['duration']/60:.3f} min, min separation {pe['d_min']:.3f} R☉, L_min = {pe['L_min']:.3f} L☉")
+if se:
+    print(f"Secondary Eclipse: duration {se['duration']/60:.3f} min, min separation {se['d_min']:.3f} R☉, L_min = {se['L_min']:.3f} L☉")
+if pe is None and se is None:
+    print("No eclipses occur for this geometry.")
+
+inc_rad = np.radians(i)
+Rsum = r1 + r2
+Rdiff = r1 - r2
+
+
+def eclipse_geometry(r_c, nu_c):
+    """Analytic impact parameter, transit duration, and inclination thresholds for a
+    single conjunction -- mirrors LC_v5.py so diagnostics still print with no eclipse."""
+    b_c = r_c * np.cos(inc_rad)
+    sin_i = np.sin(inc_rad)
+    denom_c = 1 + e * np.cos(nu_c)
+
+    if sin_i > 0:
+        arg = np.clip(np.sqrt(max(Rsum**2 - b_c**2, 0.0)) / (r_c * sin_i), -1.0, 1.0)
+        half_angle = np.arcsin(arg)
+    else:
+        half_angle = 0.0
+    duration = half_angle * P * (1 - e**2)**1.5 / (np.pi * denom_c**2)
+
+    i_min = np.degrees(np.arccos(np.clip(Rsum / r_c, -1.0, 1.0))) if r_c > 0 else np.nan
+    i_grazing = np.degrees(np.arccos(np.clip(Rdiff / r_c, -1.0, 1.0))) if r_c > 0 else np.nan
+    return {'b': b_c, 'duration': duration, 'i_min': i_min, 'i_grazing': i_grazing}
+
+
+geo_pe = eclipse_geometry(r_c_pe, nu_c_pe)
+geo_se = eclipse_geometry(r_c_se, nu_c_se)
+
+a_min_Rsol = Rsum / (1 - e)
+P_min = np.sqrt((a_min_Rsol * R_Sol / AU)**3 / (m1 + m2)) * yr
+
+print(f"Primary Transit Duration: {geo_pe['duration']/60:.3f} minutes")
+print(f"Primary Impact Parameter: {geo_pe['b']:.3f} R☉,    b/r₁ = {geo_pe['b']/r1:.3f}")
+print(f"Primary Minimum Inclination for Eclipse: {geo_pe['i_min']:.2f}° < i < {180-geo_pe['i_min']:.2f}°")
+print(f"Primary Minimum Grazing Eclipse Inclination: {geo_pe['i_grazing']:.2f}° < i < {180-geo_pe['i_grazing']:.2f}°")
+print(f"Secondary Transit Duration: {geo_se['duration']/60:.3f} minutes")
+print(f"Secondary Impact Parameter: {geo_se['b']:.3f} R☉,    b/r₁ = {geo_se['b']/r1:.3f}")
+print(f"Secondary Minimum Inclination for Eclipse: {geo_se['i_min']:.2f}° < i < {180-geo_se['i_min']:.2f}°")
+print(f"Secondary Minimum Grazing Eclipse Inclination: {geo_se['i_grazing']:.2f}° < i < {180-geo_se['i_grazing']:.2f}°")
+print(f"Minimum Possible Orbital Period: {P_min/(24*60*60):.3f} <= P < {P/(24*60*60):.3f} days")
 
 print(f"Animation saved to '{OUTPUT_FILE}'")

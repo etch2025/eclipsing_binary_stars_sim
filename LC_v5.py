@@ -258,6 +258,15 @@ ax_p4 = fig.add_subplot(gs[1, 3], aspect='equal')
 for ax in (ax_top, ax_p1, ax_p2, ax_p3, ax_p4):
     ax.grid(True, alpha=0.3 if ax is not ax_top else 1.0)
 
+# True anomaly and instantaneous separation AT each conjunction (x=0, i.e. om+nu=90 or
+# 270 deg) -- needed for analytic eclipse-geometry diagnostics even when no eclipse
+# occurs. For eccentric orbits the two conjunctions sit at different separations unless
+# omega = 0 or 180.
+nu_c_zpos = np.radians(90.0 - omega)
+nu_c_zneg = np.radians(270.0 - omega)
+r_c_zpos = a_Rsol * (1 - e**2) / (1 + e * np.cos(nu_c_zpos))
+r_c_zneg = a_Rsol * (1 - e**2) / (1 + e * np.cos(nu_c_zneg))
+
 if not eclipses_occur:
     # No eclipse: flat full-flux light curve, four identical "full system" panels
     for k in range(N_PERIODS):
@@ -268,7 +277,9 @@ if not eclipses_occur:
     panel_times = [0, P / 4, P / 2, 3 * P / 4]
     panel_titles = ["Full System"] * 4
     pe = se = None
-    nu_c_pe = nu_c_se = r_c_pe = r_c_se = None
+    # Keep geometric conjunction labeling so impact parameter / i_min / P_min still print
+    nu_c_pe, r_c_pe = nu_c_zpos, r_c_zpos
+    nu_c_se, r_c_se = nu_c_zneg, r_c_zneg
 else:
     # --- Identify primary & secondary eclipse windows (largest segment of each, if present) ---
     def eclipse_info(segs):
@@ -285,21 +296,13 @@ else:
     pe_z_pos = eclipse_info(primary_segs)      # star 2 in front (occults star 1)
     se_z_neg = eclipse_info(secondary_segs)    # star 1 in front (occults star 2)
 
-    # True anomaly and instantaneous separation AT each conjunction (x=0, i.e. om+nu=90 or
-    # 270 deg) -- needed to properly generalize the analytic eclipse-geometry formulas
-    # below to eccentric orbits, where the two conjunctions occur at different separations
-    # unless omega = 0 or 180.
-    nu_c_zpos = np.radians(90.0 - omega)
-    nu_c_zneg = np.radians(270.0 - omega)
-    r_c_zpos = a_Rsol * (1 - e**2) / (1 + e * np.cos(nu_c_zpos))
-    r_c_zneg = a_Rsol * (1 - e**2) / (1 + e * np.cos(nu_c_zneg))
-
     # The "primary" eclipse is, by convention, whichever one is DEEPER (lower L_min) --
     # not necessarily the one where a particular star is in front. If star 2 is the
     # brighter star, occulting star 1 can actually produce the shallower dip, so we
     # compare depths directly rather than assuming z>0 is always "primary". The same
     # branching also carries along each conjunction's (nu_c, r_c) for the analytic
-    # eclipse-geometry formulas further down.
+    # eclipse-geometry formulas further down. When only one eclipse is detected, the
+    # other conjunction's geometry is still kept so diagnostics always print for both.
     if pe_z_pos and se_z_neg:
         if pe_z_pos['L_min'] <= se_z_neg['L_min']:
             pe, pe_segs = pe_z_pos, primary_segs
@@ -315,15 +318,16 @@ else:
         pe, pe_segs = pe_z_pos, primary_segs
         se, se_segs = None, []
         nu_c_pe, r_c_pe = nu_c_zpos, r_c_zpos
-        nu_c_se, r_c_se = None, None
+        nu_c_se, r_c_se = nu_c_zneg, r_c_zneg
     elif se_z_neg:
         pe, pe_segs = se_z_neg, secondary_segs
         se, se_segs = None, []
         nu_c_pe, r_c_pe = nu_c_zneg, r_c_zneg
-        nu_c_se, r_c_se = None, None
+        nu_c_se, r_c_se = nu_c_zpos, r_c_zpos
     else:
         pe, se, pe_segs, se_segs = None, None, [], []
-        nu_c_pe = nu_c_se = r_c_pe = r_c_se = None
+        nu_c_pe, r_c_pe = nu_c_zpos, r_c_zpos
+        nu_c_se, r_c_se = nu_c_zneg, r_c_zneg
 
     # Plot light curve: black baseline, red over the (deeper) primary eclipse, blue over
     # the (shallower) secondary eclipse -- repeated across N_PERIODS consecutive periods,
