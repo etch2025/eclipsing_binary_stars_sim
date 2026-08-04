@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -318,14 +319,20 @@ else:
 
 # --------------------------------------------------
 # Diagnostic prints (same set as LC_v5.py; computed even when no eclipse occurs)
+# Redirect to a logfile (same print formatting as before)
+LOGFILE = f'logfile_{target}_{(P/86400):.3f}d_{sma/AU:.3f}AU_{e:.3f}.txt'
+_log_file = open(LOGFILE, 'w', encoding='utf-8')
+_stdout = sys.stdout
+sys.stdout = _log_file
+
 r_peri = a_Rsol * (1 - e)
-print(f"Orbital Period: {P/(24*60*60):.3f} days")
-print(f"Semi-major axis: {sma/AU:.4f} AU   (periastron: {r_peri:.3f} R☉, apastron: {a_Rsol*(1+e):.3f} R☉)")
-print(f"Eccentricity: {e:.3f}   Argument of Periastron: {omega:.1f}°")
+print(f"Orbital Period: {P/(24*60*60):.4f} days")
+print(f"Semi-major axis: {sma/AU:.4f} AU   (periastron: {r_peri:.4f} R☉, apastron: {a_Rsol*(1+e):.4f} R☉)")
+print(f"Eccentricity: {e:.4f}   Argument of Periastron: {omega:.4f}°")
 if pe:
-    print(f"Primary Eclipse:   duration {pe['duration']/60:.3f} min, min separation {pe['d_min']:.3f} R☉, L_min = {pe['L_min']:.3f} L☉")
+    print(f"Primary Eclipse:   duration {pe['duration']/60:.4f} min, min separation {pe['d_min']:.4f} R☉, L_min = {pe['L_min']:.4f} L☉")
 if se:
-    print(f"Secondary Eclipse: duration {se['duration']/60:.3f} min, min separation {se['d_min']:.3f} R☉, L_min = {se['L_min']:.3f} L☉")
+    print(f"Secondary Eclipse: duration {se['duration']/60:.4f} min, min separation {se['d_min']:.4f} R☉, L_min = {se['L_min']:.4f} L☉")
 if pe is None and se is None:
     print("No eclipses occur for this geometry.")
 
@@ -357,16 +364,39 @@ geo_pe = eclipse_geometry(r_c_pe, nu_c_pe)
 geo_se = eclipse_geometry(r_c_se, nu_c_se)
 
 a_min_Rsol = Rsum / (1 - e)
-P_min = np.sqrt((a_min_Rsol * R_Sol / AU)**3 / (m1 + m2)) * yr
+a_min_AU = a_min_Rsol * R_Sol / AU
+P_min = np.sqrt((a_min_AU)**3 / (m1 + m2)) * yr
 
-print(f"Primary Transit Duration: {geo_pe['duration']/60:.3f} minutes")
-print(f"Primary Impact Parameter: {geo_pe['b']:.3f} R☉,    b/r₁ = {geo_pe['b']/r1:.3f}")
-print(f"Primary Minimum Inclination for Eclipse: {geo_pe['i_min']:.2f}° < i < {180-geo_pe['i_min']:.2f}°")
-print(f"Primary Minimum Grazing Eclipse Inclination: {geo_pe['i_grazing']:.2f}° < i < {180-geo_pe['i_grazing']:.2f}°")
-print(f"Secondary Transit Duration: {geo_se['duration']/60:.3f} minutes")
-print(f"Secondary Impact Parameter: {geo_se['b']:.3f} R☉,    b/r₁ = {geo_se['b']/r1:.3f}")
-print(f"Secondary Minimum Inclination for Eclipse: {geo_se['i_min']:.2f}° < i < {180-geo_se['i_min']:.2f}°")
-print(f"Secondary Minimum Grazing Eclipse Inclination: {geo_se['i_grazing']:.2f}° < i < {180-geo_se['i_grazing']:.2f}°")
-print(f"Minimum Possible Orbital Period: {P_min/(24*60*60):.3f} <= P < {P/(24*60*60):.3f} days")
+# Max sma for an eclipse at this i: r_c < (r1+r2)/|cos i|, then convert to a
+# at each conjunction. Take the larger limit (at least one eclipse possible).
+cos_i_abs = abs(np.cos(inc_rad))
+if cos_i_abs > 1e-15:
+    r_c_max = Rsum / cos_i_abs
+    a_max_pe = r_c_max * (1 + e * np.cos(nu_c_pe)) / (1 - e**2)
+    a_max_se = r_c_max * (1 + e * np.cos(nu_c_se)) / (1 - e**2)
+    a_max_AU = max(a_max_pe, a_max_se) * R_Sol / AU
+    P_max = np.sqrt((a_max_AU)**3 / (m1 + m2)) * yr
+else:
+    a_max_AU = np.inf
+    P_max = np.inf
+
+print(f"Primary Transit Duration: {geo_pe['duration']/60:.4f} minutes")
+print(f"Primary Impact Parameter: {geo_pe['b']:.4f} R☉,    b/r₁ = {geo_pe['b']/r1:.4f}")
+print(f"Primary Minimum Inclination for Eclipse: [{geo_pe['i_min']:.4f}°, {180-geo_pe['i_min']:.4f}°]")
+print(f"Primary Minimum Grazing Eclipse Inclination: [{geo_pe['i_grazing']:.4f}°, {180-geo_pe['i_grazing']:.4f}°]")
+print(f"Secondary Transit Duration: {geo_se['duration']/60:.4f} minutes")
+print(f"Secondary Impact Parameter: {geo_se['b']:.4f} R☉,    b/r₁ = {geo_se['b']/r1:.4f}")
+print(f"Secondary Minimum Inclination for Eclipse: [{geo_se['i_min']:.4f}°, {180-geo_se['i_min']:.4f}°]")
+print(f"Secondary Minimum Grazing Eclipse Inclination: [{geo_se['i_grazing']:.4f}°, {180-geo_se['i_grazing']:.4f}°]")
+if np.isfinite(a_max_AU):
+    print(f"Possible Semi-Major Axis for Eclipse: {a_min_AU:.4f} <= a < {a_max_AU:.4f} AU")
+    print(f"Minimum Possible Orbital Period: {P_min/(24*60*60):.4f} <= P < {P_max/(24*60*60):.4f} days")
+else:
+    print(f"Possible Semi-Major Axis for Eclipse: {a_min_AU:.4f} <= a < ∞ AU  (i ≈ 90°)")
+    print(f"Minimum Possible Orbital Period: {P_min/(24*60*60):.4f} <= P < ∞ days  (i ≈ 90°)")
 
 print(f"Animation saved to '{OUTPUT_FILE}'")
+
+sys.stdout = _stdout
+_log_file.close()
+print(f"Log saved as '{LOGFILE}'")
