@@ -35,14 +35,14 @@ secondary_color = 'orange'
 # INPUT PARAMETERS: Orbital Elements
 ORBIT_INPUT = "P"
 P = 2.867328
-a_AU = 0.062043
+a_AU = 5.2038
 i = 98.7
-e = 0.0
+e = 0.00
 omega = 0.0
 
 # --- Animation-specific settings ---
 N_FRAMES = 10          # frames per orbital period (higher = smoother motion, bigger file)
-N_PERIODS = 2           # how many consecutive orbits to animate through
+N_PERIODS = 1           # how many consecutive orbits to animate through
 FPS = 30                # playback speed
 N_SAMPLES_BG = 5 * 10**6   # resolution of the background light-curve trace, PER PERIOD (doesn't need to match LC_v5's 5e6)
 # --------------------------------------------------

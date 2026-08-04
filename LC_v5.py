@@ -15,27 +15,26 @@ R_Sol = 6.96e8     # Solar Radii
 yr = 365 * 24 * 60 * 60  # Years in seconds
 
 # INPUT PARAMETERS: Primary Star
-target = "Algol AB (Beta Persei, HD 19356)"
-m1 = 3.17           # Solar Masses
-r1 = 2.73           # Solar Radii
-L1 = 182          # Solar Luminosity
+target = "Y Cygni (HD 198846)"
+m1 = 17.72           # Solar Masses
+r1 = 5.785          # Solar Radii
+L1 = 36000          # Solar Luminosity
 primary_color = 'deepskyblue'
 
 # INPUT PARAMETERS: Secondary Star
-m2 = 0.70           # Solar Masses
-r2 = 3.48           # Solar Radii
-L2 = 6.92          # Solar Luminosity
-secondary_color = 'orange'
+m2 = 17.73           # Solar Masses
+r2 = 5.816          # Solar Radii
+L2 = 37700         # Solar Luminosity
+secondary_color = 'lightskyblue'
 
 # INPUT PARAMETERS: Orbital Elements
 ORBIT_INPUT = "P"  # a
-P = 2.867328        # Orbital Period in Days (used when ORBIT_INPUT == "P")
+P = 2.996332        # Orbital Period in Days (used when ORBIT_INPUT == "P")
 a_AU = 0.062043     # Semi-Major Axis in AU (used when ORBIT_INPUT == "a")
-i = 98.7           # Inclination Angle in Deg
-e = 0.0            # Eccentricity (0 <= e < 1)
-omega = 0        # Argument of Periastron in Deg (orientation of ellipse in orbital plane,
+i = 86.474           # Inclination Angle in Deg
+e = 0.14508          # Eccentricity (0 <= e < 1)
+omega = 312.514       # Argument of Periastron in Deg (orientation of ellipse in orbital plane,
                      # measured from the ascending node; t=0 is defined as periastron passage)
-r_L1_color = "red"
 
 N_SAMPLES = 5 * 10**6   # Time resolution for the numerical scan (higher = smoother/sharper eclipses)
 N_PERIODS = 3        # How many consecutive periods to display on the light curve plot (>= 1)
