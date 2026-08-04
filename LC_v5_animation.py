@@ -41,7 +41,7 @@ e = 0.00
 omega = 0.0
 
 # --- Animation-specific settings ---
-N_FRAMES = 10          # frames per orbital period (higher = smoother motion, bigger file)
+N_FRAMES = 200          # frames per orbital period (higher = smoother motion, bigger file)
 N_PERIODS = 1           # how many consecutive orbits to animate through
 FPS = 30                # playback speed
 N_SAMPLES_BG = 5 * 10**6   # resolution of the background light-curve trace, PER PERIOD (doesn't need to match LC_v5's 5e6)
