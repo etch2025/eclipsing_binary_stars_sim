@@ -19,7 +19,7 @@ R_Sol = 6.96e8
 yr = 365 * 24 * 60 * 60
 
 # INPUT PARAMETERS: Primary Star
-target = "Test System"
+target = "Algol AB (Beta Persei, HD 19356)"
 m1 = 3.17
 r1 = 2.73
 L1 = 182
@@ -33,10 +33,10 @@ secondary_color = 'orange'
 
 # INPUT PARAMETERS: Orbital Elements
 ORBIT_INPUT = "P"
-P = 3.867328
+P = 2.867328
 a_AU = 0.062043
 i = 98.7
-e = 0.45
+e = 0.0
 omega = 0.0
 
 # --- Animation-specific settings ---
