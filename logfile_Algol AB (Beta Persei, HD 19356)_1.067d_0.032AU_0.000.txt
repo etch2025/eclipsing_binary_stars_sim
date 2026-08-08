@@ -1,0 +1,16 @@
+Orbital Period: 1.0673 days
+Semi-major axis: 0.0321 AU   (periastron: 6.9192 R☉, apastron: 6.9192 R☉)
+Eccentricity: 0.0000   Argument of Periastron: 0.0000°
+Primary Eclipse:   duration 542.2329 min, min separation 1.0466 R☉, L_min = 14.1311 L☉
+Secondary Eclipse: duration 542.2329 min, min separation 1.0466 R☉, L_min = 184.8301 L☉
+Primary Transit Duration: 542.2333 minutes
+Primary Impact Parameter: -1.0466 R☉,    b/r₁ = -0.3834
+Primary Minimum Inclination for Eclipse: [26.1682°, 153.8318°]
+Primary Minimum Grazing Eclipse Inclination: [96.2227°, 83.7773°]
+Secondary Transit Duration: 542.2333 minutes
+Secondary Impact Parameter: -1.0466 R☉,    b/r₁ = -0.3834
+Secondary Minimum Inclination for Eclipse: [26.1682°, 153.8318°]
+Secondary Minimum Grazing Eclipse Inclination: [96.2227°, 83.7773°]
+Possible Semi-Major Axis for Eclipse: 0.0288 <= a < 0.1905 AU
+Minimum Possible Orbital Period: 0.9075 <= P < 15.4263 days
+Animation saved to 'Algol AB (Beta Persei, HD 19356)_1.067d_0.032AU_200_0.0_200frames_30.mp4'
